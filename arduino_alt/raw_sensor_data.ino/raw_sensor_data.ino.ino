@@ -40,5 +40,5 @@ void loop() {
   Serial.print(" gyroY: "); Serial.print(gyroY / 131.0);
   Serial.print(" gyroZ: "); Serial.println(gyroZ / 131.0);
 
-  delay(1000); // print 10 times per second (slow enough to read)
+  delay(100); // print 10 times per second (slow enough to read)
 }
