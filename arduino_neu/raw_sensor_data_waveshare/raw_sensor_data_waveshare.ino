@@ -21,7 +21,9 @@ void setup() {
                        SensorQMI8658::GYR_ODR_112_1Hz);
   qmi.enableGyroscope();
   qmi.enableAccelerometer();
-  Serial.println("Ready! Move the board!");
+
+  // Print CSV header
+  Serial.println("timestamp_ms,accX,accY,accZ,gyroX,gyroY,gyroZ");
 }
 
 void loop() {
@@ -29,12 +31,22 @@ void loop() {
     qmi.getAccelerometer(acc.x, acc.y, acc.z);
     qmi.getGyroscope(gyr.x, gyr.y, gyr.z);
 
-    Serial.print("accX: "); Serial.print(acc.x);
-    Serial.print(" accY: "); Serial.print(acc.y);
-    Serial.print(" accZ: "); Serial.print(acc.z);
-    Serial.print(" | gyroX: "); Serial.print(gyr.x);
-    Serial.print(" gyroY: "); Serial.print(gyr.y);
-    Serial.print(" gyroZ: "); Serial.println(gyr.z);
+    // ESP32 internal clock in milliseconds
+    unsigned long timestamp_ms = millis();
+
+    Serial.print(timestamp_ms);
+    Serial.print(",");
+    Serial.print(acc.x, 4);
+    Serial.print(",");
+    Serial.print(acc.y, 4);
+    Serial.print(",");
+    Serial.print(acc.z, 4);
+    Serial.print(",");
+    Serial.print(gyr.x, 4);
+    Serial.print(",");
+    Serial.print(gyr.y, 4);
+    Serial.print(",");
+    Serial.println(gyr.z, 4);
   }
   delay(20);
 }
