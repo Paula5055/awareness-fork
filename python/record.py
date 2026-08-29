@@ -6,7 +6,7 @@ import os
 # ── Settings ──────────────────────────────────────────────
 PORT = "COM4"
 BAUD = 115200
-OUTPUT_FILE = "data/paula/raw/mum_toast_01.csv"
+OUTPUT_FILE = "data/paula/raw/mum_rice_01.csv"
 # ──────────────────────────────────────────────────────────
 
 def main():

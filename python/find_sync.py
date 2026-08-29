@@ -1,6 +1,6 @@
 import csv
 
-INPUT_FILE = "data/paula/raw/mum_toast_01.csv"
+INPUT_FILE = "data/paula/raw/mum_rice_01.csv"
 GYRO_THRESHOLD = 10.0
 
 data = []
