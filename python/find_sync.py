@@ -1,7 +1,8 @@
 import csv
 
-INPUT_FILE = "data/paula/raw/mum_rice_01.csv"
-GYRO_THRESHOLD = 10.0
+INPUT_FILE = "data/paula/raw/mum_noodles_01.csv"
+GYRO_THRESHOLD = 30.0  # raised from 10 to filter out startup noise
+SKIP_SECONDS = 5       # skip first 5 seconds
 
 data = []
 with open(INPUT_FILE, "r") as f:
@@ -17,13 +18,15 @@ with open(INPUT_FILE, "r") as f:
 start_ts = data[0][0]
 print(f"Duration: {(data[-1][0] - start_ts) / 1000:.1f} seconds")
 print(f"Total rows: {len(data)}")
-print("\nFirst 5 significant movements (gyro > 10 deg/sec):")
+print(f"\nFirst 5 significant movements (gyro > {GYRO_THRESHOLD} deg/sec, after {SKIP_SECONDS}s):")
 
 found = 0
 for row in data:
+    t = (row[0] - start_ts) / 1000
+    if t < SKIP_SECONDS:
+        continue
     gyro_max = max(abs(row[4]), abs(row[5]), abs(row[6]))
     if gyro_max > GYRO_THRESHOLD:
-        t = (row[0] - start_ts) / 1000
         print(f"  t={t:.2f}s | accZ={row[3]:.3f} | gyroX={row[4]:.1f} gyroY={row[5]:.1f} gyroZ={row[6]:.1f}")
         found += 1
         if found >= 5:
