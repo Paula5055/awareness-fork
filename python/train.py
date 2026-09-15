@@ -23,6 +23,11 @@ VAL_SPLIT     = 0.2
 RANDOM_SEED   = 42
 MODEL_OUT     = Path("model/awareness_fork_gru_test.keras")
 
+# Set this to force specific recording(s) as validation, for fair
+# before/after comparisons across runs. Leave as None for a random
+# group split (GroupShuffleSplit).
+VALIDATION_RECORDINGS = ["mum_noodles_01_labeled"]
+
 
 # ── Step 1: Load & combine all labeled recordings ────────────────────
 def load_all_recordings():
@@ -42,8 +47,8 @@ def load_all_recordings():
 
 
 # ── Step 2: Cut each recording into overlapping windows ──────────────
-# NOTE: also tracks which recording each window came from (the "group"),
-# so we can later split by whole recording instead of by window.
+# Also tracks which recording each window came from (the "group"),
+# so we can split by whole recording instead of by window.
 def make_windows(recordings):
     X_list, y_list, group_list = [], [], []
     feature_cols = recordings[0]["feature_cols"]
@@ -58,7 +63,7 @@ def make_windows(recordings):
             end = start + WINDOW_SIZE
             X_list.append(values[start:end])
             y_list.append(labels[start:end])
-            group_list.append(rec["name"])   # <- which recording this window belongs to
+            group_list.append(rec["name"])
 
     X = np.stack(X_list)
     y = np.stack(y_list)[..., np.newaxis]
@@ -133,8 +138,19 @@ def main():
     print(f"Features used: {feature_cols}")
 
     print("\nSplitting by WHOLE RECORDING (no leakage)...")
-    gss = GroupShuffleSplit(n_splits=1, test_size=VAL_SPLIT, random_state=RANDOM_SEED)
-    train_idx, val_idx = next(gss.split(X, y, groups=groups))
+    if VALIDATION_RECORDINGS:
+        val_mask = np.isin(groups, VALIDATION_RECORDINGS)
+        train_idx = np.where(~val_mask)[0]
+        val_idx = np.where(val_mask)[0]
+        if len(val_idx) == 0:
+            raise ValueError(
+                f"No windows matched VALIDATION_RECORDINGS={VALIDATION_RECORDINGS}. "
+                f"Available recordings: {sorted(set(groups))}"
+            )
+    else:
+        gss = GroupShuffleSplit(n_splits=1, test_size=VAL_SPLIT, random_state=RANDOM_SEED)
+        train_idx, val_idx = next(gss.split(X, y, groups=groups))
+
     X_train, X_val = X[train_idx], X[val_idx]
     y_train, y_val = y[train_idx], y[val_idx]
 
