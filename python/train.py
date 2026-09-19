@@ -38,6 +38,11 @@ def load_all_recordings():
     recordings = []
     for f in csv_files:
         df = pd.read_csv(f)
+
+        # engineered feature: acc axes diverge during a bite (tilt + motion
+        # combined) — see project notes for the physical explanation
+        df["acc_diff"] = df["accY"] - df["accZ"]
+
         feature_cols = [c for c in df.columns if c not in ("timestamp_ms", "label")]
         df["label_bin"] = (df["label"] == "bite").astype(np.float32)
         recordings.append({"name": f.stem, "df": df, "feature_cols": feature_cols})
