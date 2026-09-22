@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
 
 # ── Settings ──────────────────────────────────────────────
-INPUT_FILE   = "data/paula/labeled/sister_cake_02_labeled.csv"
+INPUT_FILE   = "data/paula/labeled/mum_banana_02_labeled.csv"
 WINDOW_SEC   = 20   # how many seconds are visible at once
 
 # ──────────────────────────────────────────────────────────

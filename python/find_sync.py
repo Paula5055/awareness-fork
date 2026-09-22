@@ -1,6 +1,6 @@
 import csv
 
-INPUT_FILE = "data/paula/raw/sister_cake_02.csv"
+INPUT_FILE = "data/paula/raw/mum_banana_02.csv"
 GYRO_THRESHOLD = 30.0  # raised from 10 to filter out startup noise
 SKIP_SECONDS = 5       # skip first 5 seconds
 
