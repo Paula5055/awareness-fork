@@ -21,7 +21,7 @@ WINDOW_SIZE   = int(WINDOW_SEC * SAMPLE_RATE)   # 100 timesteps
 STRIDE        = WINDOW_SIZE // 4                # 75% overlap
 VAL_SPLIT     = 0.2
 RANDOM_SEED   = 42
-MODEL_OUT     = Path("model/awareness_fork_gru_test.keras")
+MODEL_OUT     = Path("model/awareness_fork_gru_final.keras")
 
 # Set this to force specific recording(s) as validation, for fair
 # before/after comparisons across runs. Leave as None for a random

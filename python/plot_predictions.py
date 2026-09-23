@@ -20,6 +20,7 @@ def main():
     print(f"Loading {LABELED_FILE} ...")
     df = pd.read_csv(LABELED_FILE)
     print(f"Loaded {len(df)} rows.")
+    df["acc_diff"] = df["accY"] - df["accZ"]
 
     print(f"Loading normalization stats from {NORM_FILE} ...")
     norm = np.load(NORM_FILE, allow_pickle=True)
