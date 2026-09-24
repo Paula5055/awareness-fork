@@ -9,8 +9,8 @@ import tensorflow as tf
 
 # ── Settings ──────────────────────────────────────────────
 LABELED_FILE = "data/paula/labeled/mum_noodles_01_labeled.csv"
-MODEL_FILE   = "model/awareness_fork_gru_test.keras"
-NORM_FILE    = "model/awareness_fork_gru_test.norm.npz"
+MODEL_FILE   = "model/awareness_fork_gru_final.keras"
+NORM_FILE    = "model/awareness_fork_gru_final.norm.npz"
 WINDOW_SIZE  = 100  # must match train.py
 WINDOW_SEC   = 20   # how many seconds are visible at once in the plot
 

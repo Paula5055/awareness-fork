@@ -5,9 +5,9 @@ continuously, detects bite events, and triggers the vibration motor if
 the gap between two bites is shorter than the science-based threshold
 (18 sec, based on the 20:20:20 rule).
 
-Tuned to be more sensitive ("safety version"): since almost nobody actually
-holds an 18-second gap between bites anyway, it's better to catch every real
-bite (even at the cost of an occasional false alarm) than to miss one.
+Tuned to a middle ground between the original defaults and the earlier
+"safety version" (which favored catching every bite over avoiding false
+alarms) — now that the final model is trained on all 12 recordings.
 """
 
 import re
@@ -22,12 +22,12 @@ import tensorflow as tf
 SERIAL_PORT   = "COM4"      # same port used in Arduino IDE / record.py — adjust if needed
 BAUD_RATE     = 115200      # must match the baud rate set in the Arduino sketch
 
-MODEL_FILE    = "model/awareness_fork_gru_test.keras"
-NORM_FILE     = "model/awareness_fork_gru_test.norm.npz"
+MODEL_FILE    = "model/awareness_fork_gru_final.keras"
+NORM_FILE     = "model/awareness_fork_gru_final.norm.npz"
 
 WINDOW_SIZE   = 100          # must match train.py (2 sec @ 50 Hz)
-CONFIRM_STEPS = 4            # consecutive "bite" predictions needed to confirm a real bite start (~0.08 sec) — lowered from 6 for faster, more sensitive reaction
-PRED_THRESHOLD = 0.35        # probability above which a timestep counts as "bite" — lowered from 0.5, catches more bites at the cost of some false alarms
+CONFIRM_STEPS = 5            # consecutive "bite" predictions needed to confirm a real bite start — middle ground between 6 (default) and 4 (safety version)
+PRED_THRESHOLD = 0.42        # probability above which a timestep counts as "bite" — middle ground between 0.5 (default) and 0.35 (safety version)
 BITE_THRESHOLD_SEC = 18.0    # gap between bites below this triggers vibration (20:20:20 rule, slightly relaxed)
 
 VIBRATE_COMMAND = b"V"       # single byte sent to the ESP32 to trigger vibration
@@ -141,7 +141,6 @@ def main():
             predict_ms = (t_predict_end - t_predict_start) * 1000
             if predict_ms > 20:  # longer than the 20ms gap between sensor readings
                 slow_prediction_count += 1
-                print(f"  \u26a0\ufe0f Prediction took {predict_ms:.0f}ms (langsamer als Echtzeit!)")
 
             # we only care about the prediction for the most recent timestep
             raw_bite = pred_prob[0, -1, 0] >= PRED_THRESHOLD
